@@ -67,6 +67,10 @@ class Robot(abc.ABC):
             raise InsufficientBatteryError(self.name, batCharge, self.battery)
         self.battery -= batCharge
 
+    @classmethod
+    def from_config(cls, config):
+        return cls(config['name'], config.get('battery', 100))
+
 class CleaningRobot(Robot):
     def __str__(self):
         return f"{self.name}: With Modifications. From {self.manufacturer}. Description: Used for cleaning tasks."
@@ -112,3 +116,4 @@ fleet_report(fleet)
 for r in fleet:
     run_task_safely(r)
     print()
+
