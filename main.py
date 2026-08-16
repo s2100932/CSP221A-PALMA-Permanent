@@ -1,5 +1,3 @@
-print("for revert testing")
-
 import abc
 import logging
 import functools
