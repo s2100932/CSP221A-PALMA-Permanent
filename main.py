@@ -75,14 +75,19 @@ class CleaningRobot(Robot):
     def __str__(self):
         return f"{self.name}: With Modifications. From {self.manufacturer}. Description: Used for cleaning tasks."
     
-    def __init__(self, name, battery=100, dustbin=50):
+    def __init__(self, name, battery=100, dustbin=50, suction=50):
         super().__init__(name, battery)
         self.dustbin = dustbin
+        self.suction = suction
+
+    def bot_upgrade(self, new_suction_power=100):
+            self.suction = new_suction_power
+            print(f"{self.name} has been upgraded from {self.suction} suction power.")
 
     @log_action
     def perform_task(self):
         self.use_battery(5)
-        print(f"{self.name} is cleaning the floor and has a {self.dustbin}% full dustbin.")
+        print(f"{self.name} is cleaning the floor and has a {self.dustbin}% full dustbin with suction power of {self.suction}.")
         return f"{self.name} Task Complete."
 
 
@@ -91,9 +96,13 @@ class DroneRobot(Robot):
     def __str__(self):
         return f"{self.name}: With Modifications. From {self.manufacturer}. Description: Used for aerial pictures."
 
-    def __init__(self, name, battery=100, camera_quality="4K 1080p"):
+    def __init__(self, name, battery=100, camera_quality="4K"):
         super().__init__(name, battery)
         self.camera_quality = camera_quality
+
+    def bot_upgrade(self, new_camera_quality="8K"):
+        self.camera_quality = new_camera_quality
+        print(f"{self.name} has been upgraded to {self.camera_quality} camera.")
 
     @log_action
     def perform_task(self):
@@ -110,10 +119,14 @@ def fleet_report(robots):
         print(str(r))
     print()
 
-fleet = [CleaningRobot("Roomba"), DroneRobot("HeliDrone")]
+fleet = [CleaningRobot.from_config({"name": "Roomba"}), DroneRobot.from_config({"name": "HeliDrone"})]
 fleet_report(fleet)
 
 for r in fleet:
     run_task_safely(r)
     print()
 
+print("Drone Upgrade:")
+fleet[0].bot_upgrade()
+fleet[1].bot_upgrade()
+print()
