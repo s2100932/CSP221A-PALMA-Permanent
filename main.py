@@ -24,7 +24,7 @@ def run_task_safely(robot, **kwargs):
     finally:
         print(f"Battery level after task: {robot.battery}%")
 
-def debug_activity(func):
+def log_action(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logging.info(f"Starting: {func.__name__}")
@@ -75,7 +75,7 @@ class CleaningRobot(Robot):
         super().__init__(name, battery)
         self.dustbin = dustbin
 
-    @debug_activity
+    @log_action
     def perform_task(self):
         self.use_battery(5)
         print(f"{self.name} is cleaning the floor and has a {self.dustbin}% full dustbin.")
@@ -91,7 +91,7 @@ class DroneRobot(Robot):
         super().__init__(name, battery)
         self.camera_quality = camera_quality
 
-    @debug_activity
+    @log_action
     def perform_task(self):
         self.use_battery(12)
         print(f"{self.name} is flying and taking aerial photos with {self.camera_quality} camera.")
@@ -104,10 +104,11 @@ def fleet_report(robots):
     print()
     for r in robots:
         print(str(r))
-        r.perform_task()
-        print(repr(r))
-        print()
     print()
 
 fleet = [CleaningRobot("Roomba"), DroneRobot("HeliDrone")]
 fleet_report(fleet)
+
+for r in fleet:
+    run_task_safely(r)
+    print()
